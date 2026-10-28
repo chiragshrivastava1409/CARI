@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login – CARI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="auth-wrap">
+
+    <section class="auth-hero">
+      <div class="brand">
+        <img src="logo.png" alt="" class="logo" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'logo-fallback',textContent:'C'}))" />
+        <div><b>CARI</b><span>Campus Asset Recovery Intelligence</span></div>
+      </div>
+      <h1>Lost something on campus?<br />Let CARI find it.</h1>
+      <ul>
+        <li>🔍 Report lost &amp; found items in under a minute</li>
+        <li>🧠 AI compares photos &amp; details and shows match %</li>
+        <li>🔒 Only college members can see reports</li>
+      </ul>
+      <p class="auth-credit"><span id="collegeName">MITS Gwalior</span> • Not an official college system</p>
+    </section>
+
+    <section class="auth-card">
+      <div class="auth-tabs">
+        <button type="button" class="active" data-mode="login">Login</button>
+        <button type="button" data-mode="register">Student Sign up</button>
+      </div>
+
+      <h2 id="authTitle">Welcome back 👋</h2>
+      <p class="auth-sub" id="authSub">Students and Admin both login here.</p>
+
+      <form id="authForm" novalidate>
+        <label id="nameRow" hidden>Full name
+          <input name="name" maxlength="60" autocomplete="name" placeholder="e.g. Krish Rathore" />
+        </label>
+
+        <label id="kindRow" hidden>I am a
+          <select name="kind" id="kind"><option value="student">Student</option><option value="staff">Staff / Faculty</option></select>
+        </label>
+
+        <label><span id="idLabel">Enrollment No. / Email / Admin ID</span>
+          <input name="loginId" maxlength="80" autocomplete="username" placeholder="e.g. 0901CS231001" required />
+        </label>
+
+        <label id="emailRow" hidden><span>College email <small id="domainHint"></small></span>
+          <input type="email" name="email" maxlength="80" autocomplete="email" placeholder="you@college.ac.in" />
+        </label>
+
+        <label id="branchRow" hidden>Branch &amp; year / Department
+          <input name="branch" maxlength="60" placeholder="e.g. CSE 3rd year" />
+        </label>
+
+        <label>Password
+          <div class="pw">
+            <input type="password" name="password" id="pw" maxlength="100" autocomplete="current-password" required />
+            <button type="button" id="pwToggle" aria-label="Show password">👁</button>
+          </div>
+        </label>
+
+        <label id="pw2Row" hidden>Confirm password
+          <input type="password" name="password2" maxlength="100" autocomplete="new-password" />
+        </label>
+
+        <p id="authError" class="auth-error" hidden></p>
+        <button class="btn primary full" type="submit" id="authBtn">Login</button>
+      </form>
+
+      <p class="auth-foot" id="authFoot">New student? Click <b>Student Sign up</b> above.</p>
+    </section>
+
+  </main>
+  <script src="login.js"></script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CARI – Campus Asset Recovery Intelligence</title>
+  <meta name="description" content="CARI - AI-powered lost and found for MITS Gwalior students and staff" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <!-- Put your college logo at public/logo.png -->
+        <img src="logo.png" alt="College logo" class="logo" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'logo-fallback',textContent:'C'}))" />
+        <div>
+          <b>CARI</b>
+          <span>Campus Asset Recovery Intelligence</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-tab="all"><span class="ico">🏠</span> All Items</button>
+        <button class="nav-item" data-tab="lost"><span class="ico">🔍</span> Lost Items</button>
+        <button class="nav-item" data-tab="found"><span class="ico">🎒</span> Found Items</button>
+        <button class="nav-item" data-tab="mine"><span class="ico">🧠</span> My Reports <span class="nav-badge" id="mineBadge" hidden></span></button>
+        <button class="nav-item admin-link" id="adminBtn" hidden><span class="ico">🛡️</span> Admin Panel</button>
+      </nav>
+
+      <div class="side-card">
+        <h4>How it works</h4>
+        <ol>
+          <li>Report what you lost or found</li>
+          <li>CARI's AI compares it &amp; shows match %</li>
+          <li>Mark it returned once it is back</li>
+        </ol>
+      </div>
+
+      <div class="user-box">
+        <div class="user-av" id="userAv">?</div>
+        <div class="user-info"><b id="userName">…</b><small id="userRole"></small></div>
+        <button class="logout-btn" id="logoutBtn" title="Logout">Logout</button>
+      </div>
+      <div class="ai-state" id="aiState">🧠 Smart matching on</div>
+      <button class="theme-btn" id="themeBtn">🌙 Dark mode</button>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+        <div class="search-wrap">
+          <span>🔎</span>
+          <input type="search" id="search" placeholder="Search wallet, ID card, library, black bag..." />
+        </div>
+        <button class="btn primary" id="openFormBtn">＋ Report Item</button>
+      </header>
+
+      <section class="content">
+        <!-- Welcome banner -->
+        <div class="banner">
+          <div>
+            <p class="eyebrow">MITS Gwalior • AI-powered recovery</p>
+            <h2>Lost something on campus?<br />CARI's AI will find the match.</h2>
+            <div class="banner-btns">
+              <button class="btn lost" data-open="lost">I lost an item</button>
+              <button class="btn found" data-open="found">I found an item</button>
+            </div>
+          </div>
+          <div class="banner-art" aria-hidden="true">🔑 👜 📱</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+          <div class="stat"><span class="stat-ico lostbg">🔍</span><div><b id="sLost">0</b><small>Items lost</small></div></div>
+          <div class="stat"><span class="stat-ico foundbg">🎒</span><div><b id="sFound">0</b><small>Items found</small></div></div>
+          <div class="stat"><span class="stat-ico retbg">✅</span><div><b id="sReturned">0</b><small>Returned to owners</small></div></div>
+        </div>
+
+        <!-- Filters -->
+        <div class="toolbar">
+          <div class="chips" id="chips"></div>
+          <select id="sort">
+            <option value="new">Newest first</option>
+            <option value="old">Oldest first</option>
+          </select>
+        </div>
+
+        <p id="count" class="count"></p>
+        <div id="grid" class="grid"></div>
+        <div id="empty" class="empty" hidden>
+          <div>📭</div>
+          <h3 id="emptyTitle">Nothing here yet</h3>
+          <p id="emptyMsg">Try a different search, or be the first to report an item.</p>
+        </div>
+      </section>
+
+      <footer>CARI – Campus Asset Recovery Intelligence • Made with ♥ for the MITS community • Not an official college system</footer>
+    </div>
+  </div>
+
+  <!-- ===== REPORT FORM ===== -->
+  <div class="modal" id="formModal" hidden>
+    <div class="sheet">
+      <button class="close" data-close="formModal" aria-label="Close">×</button>
+      <h3>Report an item</h3>
+      <form id="itemForm">
+        <div class="seg">
+          <input type="radio" id="tLost" name="type" value="lost" checked /><label for="tLost">🔍 I lost it</label>
+          <input type="radio" id="tFound" name="type" value="found" /><label for="tFound">🎒 I found it</label>
+        </div>
+
+        <label class="drop" id="drop">
+          <input type="file" name="photo" id="photo" accept="image/*" hidden />
+          <div id="dropText"><span>📷</span><b>Add a photo</b><small>Click or drag &amp; drop (max 5 MB)</small></div>
+          <img id="preview" alt="" hidden />
+        </label>
+
+        <div class="row">
+          <label>Item name *<input name="title" required maxlength="80" placeholder="e.g. Black wallet" /></label>
+          <label>Category *
+            <select name="category" id="formCategory" required></select>
+          </label>
+        </div>
+
+        <label>Description * <small>(colour, brand, marks, what's inside)</small>
+          <textarea name="description" required maxlength="500" rows="3"></textarea>
+        </label>
+
+        <div class="row">
+          <label>Place *<input name="location" required maxlength="100" placeholder="Library, 2nd floor" /></label>
+          <label>Date *<input type="date" name="date" id="dateInput" required /></label>
+        </div>
+
+        <div class="divider">Your contact</div>
+
+        <div class="row">
+          <label>Your name *<input name="contactName" required maxlength="60" /></label>
+          <label>I am a *
+            <select name="role"><option value="student">Student</option><option value="staff">Staff</option></select>
+          </label>
+        </div>
+        <label>Phone or email * <small>(visible to other logged-in members)</small><input name="contact" required maxlength="80" /></label>
+
+        <p id="formError" class="error" hidden></p>
+        <button class="btn primary full" type="submit" id="submitBtn">Submit report</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== DETAIL ===== -->
+  <div class="modal" id="detailModal" hidden>
+    <div class="sheet">
+      <button class="close" data-close="detailModal" aria-label="Close">×</button>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+  <!-- ===== CARI MATCH RESULTS ===== -->
+  <div class="modal" id="matchModal" hidden>
+    <div class="sheet wide">
+      <button class="close" data-close="matchModal" aria-label="Close">×</button>
+      <h3>🧠 CARI Match Results</h3>
+      <p class="sub" id="matchSub"></p>
+      <div id="matchBody"></div>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN PANEL (only the admin sees the button) ===== -->
+  <div class="modal" id="adminModal" hidden>
+    <div class="sheet admin">
+      <button class="close" data-close="adminModal" aria-label="Close">×</button>
+      <h3>🛡️ Admin Panel</h3>
+      <p class="sub">Check all reports and delete anything wrong.</p>
+      <input type="search" id="adminSearch" placeholder="Search item, place, student name or ID..." style="width:100%;padding:10px 14px;margin-bottom:12px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit" />
+      <div id="adminBody"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="script.js"></script>
+</body>
+</html>
